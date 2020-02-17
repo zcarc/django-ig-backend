@@ -52,7 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# DIRS 부분이 html의 위치를 설정하는 부분입니다.
+# 'DIRS': [] 부분이 html의 위치를 설정하는 부분입니다.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

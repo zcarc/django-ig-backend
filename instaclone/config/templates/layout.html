@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/new_post.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'js/insta.js' %}">
+    <link rel="stylesheet" href="{% static 'js/rander_page.js' %}">
+
+</head>
+<body>
+
+    <section id="container">
+
+        <!-- 네비게이션 영역 -->
+        <header id="header">
+            <section class="h_inner">
+
+                <h1 class="logo">
+                    <div class="sprite_insta_icon"></div>
+
+                    <div>
+                        <div class="sprite_write_logo"></div>
+                    </div>
+                </h1>
+
+                <div class="search_field">
+                    <input type="text" placeholder="검색" tabindex="0">
+                    <div class="fake_field">
+                        <span class="sprite_small_search_icon"></span>
+                        <span>검색</span>
+                    </div>
+                </div>
+
+                <!-- 각 페이지로 이동할 아이콘들을 불러옵니다. -->
+                <div class="right_icons">
+                    <div class="sprite_camera_icon"><a href="#"></a></div>
+                    <div class="sprite_compass_icon"><a href="#"></a></div>
+                    <div class="sprite_heart_icon_outline"><a href="#"></a></div>
+                    <div class="sprite_user_icon_outline"><a href="#"></a></div>
+                </div>
+
+
+            </section>
+        </header>
+
+        <!-- 페이지 마다 다른 영역 -->
+        {% block content %}
+        {% endblock %}
+
+    </section>
+
+</body>
+</html>
