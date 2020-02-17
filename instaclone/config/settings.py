@@ -126,6 +126,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# config/static 폴더 아래에서 static 파일들을 관리합니다.
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'config', 'static'),
 ]
