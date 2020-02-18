@@ -1,7 +1,10 @@
 
 from django.contrib.auth import get_user_model
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
+
+# 데코레이트
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def post_list(request):
@@ -29,3 +32,71 @@ def post_list(request):
         return render(request, 'post/post_list.html', {
             'posts': post_list,
         })
+
+
+
+# 데코레이트 문법
+# 로그인이 되어있을 경우에만 함수가 실행됩니다.
+
+# 게시글 작성
+@login_required
+def post_new(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            # commit=False로 중복 DB 저장을 방지합니다.
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            # post.tag_save()
+            messages.info(request, '새 글이 등록되었습니다.')
+            return redirect('post:post_list')
+
+        else:
+            form = PostForm()
+        return render(request, 'post/post_new.html', {
+            'form': form,
+        })
+
+
+# 게시글 수정
+@login_required
+def post_edit(request, pk):
+
+    # 객체가 있는지 확인 없다면 404 반환
+    post = get_object_or_404(Post, pk=pk)
+    if post.author != request.user:
+        messages.warning(request, '잘못된 접근입니다.')
+        return redirect('post:post_list')
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            post = form.save()
+            # post.tag_set.clear()
+            # post.tag_save()
+            messages.success(request, '수정완료')
+            return redirect('post:post_list')
+
+        else:
+            form = PostForm(instance=post)
+        return render(request, 'post/post_edit.html', {
+            'post:': post,
+            'form': form,
+        })
+
+# 게시글 삭제
+@login_required
+def post_delete(request, pk):
+
+    # 객체가 있는지 확인 없다면 404 반환
+    post = get_object_or_404(Post, pk=pk)
+    if post.author != request.user or request.method == 'GET':
+        messages.warning(request, '잘못된 접근입니다.')
+        return redirect('post:post_list')
+
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, '삭제완료')
+        return redirect('post:post_list')
+
