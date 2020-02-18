@@ -16,13 +16,14 @@ class LoginForm(forms.ModelForm):
 # 회원가입 폼
 class SignupForm(UserCreationForm):
     # label: 라벨 tag에서 사용자명이라는 부분을 불러옵니다.
+    # 사용자 이름과 비밀번호는 UserCreationForm 에서 자동으로 생성해줍니다.
     username = forms.CharField(label='사용자명', widget=forms.TextInput(attrs={
         'pattern': '[a-zA-Z0-9]+',
         'title': '특수문자, 공백 입력불가',
     }))
 
     nickname = forms.CharField(label='닉네임')
-    picture = forms.ImageField(lable='프로필 사진', required=False)
+    picture = forms.ImageField(label='프로필 사진', required=False)
 
     # Meta 라는 부분은 데이터를 그대로 넘겨주는것으로 보시면 됩니다.
     class Meta(UserCreationForm.Meta):

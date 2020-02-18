@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 # allauth로 패키지를 설치한 것도 같이 연결해줍니다.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('account.urls')),
+    path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 

@@ -11,7 +11,7 @@
 
                 <h1 class="sprite_insta_big_logo title"></h1>
 
-                <form action="#">
+                <form action="{% url 'accounts:login' %}" method="post">
                     {% csrf_token %}
 
                     <p class="login_user_name">
