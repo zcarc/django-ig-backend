@@ -45,4 +45,40 @@
     </div>
 </div>
 
+<script>
+    const fileInput = document.querySelector("#id_photo")
+    fileInput.addEventListener('change', handleImage);
+    const canvas = document.getElementById('imageCanvas');
+
+    // 드로잉이 가능하도록 만듭니다.
+    const ctx = canvas.getContext('2d');
+
+    function handleImage(e) {
+
+        const reader = new FileReader();
+
+        // reader가 로드되었을 때 (페이지가 전부 로드 되었을 때)
+        reader.onload = function(event){
+
+            const img = new Image();
+
+            img.onload = function(){
+                canvas.width = 300;
+                canvas.height = 300;
+
+                // 이미지를 그려줍니다.
+                ctx.drawImage(img,0,0,300,300);
+            };
+
+            // 이미지 경로
+            // 이벤트의 노드(타겟)를 추적해서 결과를 가져옵니다.
+            img.src = event.target.result;
+        };
+
+        // input 박스에 집어넣은 이미지를 최종적으로 파일리더에 담아서 함수를 종료합니다.
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+</script>
+
 {% endblock %}
