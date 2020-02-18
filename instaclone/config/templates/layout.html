@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="{% static 'js/insta.js' %}">
     <link rel="stylesheet" href="{% static 'js/rander_page.js' %}">
 
+    {% block head %}
+    {% endblock %}
+
 </head>
 <body>
 
@@ -25,8 +28,10 @@
             <section class="inner">
 
                 <h1 class="logo">
-                    <div class="sprite_insta_icon"></div>
-                    <div class="sprite_write_logo"></div>
+                    <a href="{% url 'post:post_list' %}">
+                        <div class="sprite_insta_icon"></div>
+                        <div class="sprite_write_logo"></div>
+                    </a>
                 </h1>
 
                 <div class="search_field">
