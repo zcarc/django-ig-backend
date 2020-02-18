@@ -1,14 +1,13 @@
-
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
-
-# 데코레이트
+from .forms import PostForm
 from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def post_list(request):
-
     # 포스트에서 모든 내용을 불러옵니다.
     post_list = Post.objects.all()
 
@@ -34,7 +33,6 @@ def post_list(request):
         })
 
 
-
 # 데코레이트 문법
 # 로그인이 되어있을 경우에만 함수가 실행됩니다.
 
@@ -52,17 +50,16 @@ def post_new(request):
             messages.info(request, '새 글이 등록되었습니다.')
             return redirect('post:post_list')
 
-        else:
-            form = PostForm()
-        return render(request, 'post/post_new.html', {
-            'form': form,
-        })
+    else:
+        form = PostForm()
+    return render(request, 'post/post_new.html', {
+        'form': form,
+    })
 
 
 # 게시글 수정
 @login_required
 def post_edit(request, pk):
-
     # 객체가 있는지 확인 없다면 404 반환
     post = get_object_or_404(Post, pk=pk)
     if post.author != request.user:
@@ -85,10 +82,10 @@ def post_edit(request, pk):
             'form': form,
         })
 
+
 # 게시글 삭제
 @login_required
 def post_delete(request, pk):
-
     # 객체가 있는지 확인 없다면 404 반환
     post = get_object_or_404(Post, pk=pk)
     if post.author != request.user or request.method == 'GET':
@@ -99,4 +96,3 @@ def post_delete(request, pk):
         post.delete()
         messages.success(request, '삭제완료')
         return redirect('post:post_list')
-
