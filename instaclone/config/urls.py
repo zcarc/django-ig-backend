@@ -18,6 +18,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.shortcuts import redirect
+
 # accounts를 입력했을 때 accounts의 url로 이동합니다.
 # allauth로 패키지를 설치한 것도 같이 연결해줍니다.
 urlpatterns = [
