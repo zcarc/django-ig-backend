@@ -13,7 +13,7 @@ def photo_path(instance, filename):
     arr = [choice(string.ascii_letters) for _ in range(8)]  # 대소문자 관계없이 문자열을 불러옵니다. 0부터 8까지
     pid = ''.join(arr)  # 알파벳을 하나하나 이어 붙입니다.
     extension = filename.split('.')[-1]  # 파일이름을 . 기준으로 분리하고 맨 마지막 값을 가져옵니다. (확장자만 불러옵니다.)
-    return 'accounts/{}/{}.{}'.format(strftime('post/%Y/%m/%d'), instance.author.username, pid, extension)  # 폴더를 만들고 파일로 저장합니다.
+    return '{}/{}/{}.{}'.format(strftime('post/%Y/%m/%d/'), instance.author.username, pid, extension)  # 폴더를 만들고 파일로 저장합니다.
 
 class Post(models.Model):
     # 유저 모델의 내용을 외래키로 받아오고 author에 저장합니다.

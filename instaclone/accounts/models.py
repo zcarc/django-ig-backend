@@ -41,6 +41,6 @@ class Profile(models.Model):
                               default='N')
 
 
-# 외래키 설정
-def __str__(self):
-    return self.nickname
+    # 외래키 설정
+    def __str__(self):
+        return self.nickname

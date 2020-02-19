@@ -75,12 +75,12 @@ def post_edit(request, pk):
             messages.success(request, '수정완료')
             return redirect('post:post_list')
 
-        else:
-            form = PostForm(instance=post)
-        return render(request, 'post/post_edit.html', {
-            'post:': post,
-            'form': form,
-        })
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'post/post_edit.html', {
+        'post': post,
+        'form': form,
+    })
 
 
 # 게시글 삭제
