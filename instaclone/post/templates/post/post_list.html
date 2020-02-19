@@ -39,6 +39,14 @@
                                 <div class="country s_text">Seoul, South Korea</div>
                             </div>
 
+                            <div>
+                                <!--post/urls.py의 post_delete에 post.pk 값을 보냅니다.-->
+                                <form action="{% url 'post:post_delete' post.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="submit" value="삭제">
+                                </form>
+                            </div>
+
                         </div>
 
                         <div class="sprite_more_icon" data-name="more">
