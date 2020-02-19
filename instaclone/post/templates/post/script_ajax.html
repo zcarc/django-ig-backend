@@ -1,0 +1,30 @@
+<script type="text/javascript">
+
+    (function(){
+
+        // delegation 기준 태그
+        const delegation = document.querySelector('.contents_box');
+
+
+        // delegation 함수
+        function delegationFunc(e) {
+
+            let element = e.target;
+
+            // 콘솔을 찍어보면 'e'의 target은 클릭된 하위태그임을 알 수 있습니다.
+            // console.log('e: ', e);
+
+            // target
+            console.log('element: ', element);
+
+            // 타겟을 클릭했을 때 클래스 'on'을 추가해줍니다.
+            element.classList.toggle('on');
+        }
+
+
+        // delegation 클릭 이벤트
+        delegation.addEventListener('click', delegationFunc);
+
+    })();
+
+</script>
