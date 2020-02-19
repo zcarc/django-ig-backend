@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 
-from .models import Post
+from .models import Post, Like, Bookmark
 
 class PostForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
@@ -9,6 +9,12 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = '__all__'
+
+
+# 표 형식으로 어드민 페이지 구성
+class LikeInline(admin.TabularInline):
+    model = Like
+
 
 # Register your models here.
 @admin.register(Post)
@@ -18,7 +24,20 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ['id', 'author', 'nickname', 'content', 'created_at']
     list_display_links = ['author', 'nickname', 'content']
     form = PostForm
+    inlines = [LikeInline]
 
     # nickname이 Post 테이블에 없어서 정의해줍니다.
     def nickname(request, post):
         return post.author.profile.nickname
+
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'post', 'user', 'created_at']
+    list_display_links = ['post', 'user']
+
+
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    list_display = ['id', 'post', 'user', 'created_at']
+    list_display_links = ['post', 'user']
