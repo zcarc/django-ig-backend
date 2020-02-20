@@ -5,7 +5,7 @@ from .models import Post
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-import json
+import json # 이 부분을 불러오지 않으면 ajax 통신에서 error가 발생합니다.
 from django.http import HttpResponse
 
 
