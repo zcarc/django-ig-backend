@@ -1,7 +1,7 @@
 from django import forms
 
 # 모델과 통신을 해야 값을 넣어줄 수 있습니다.
-from .models import Post
+from .models import Post, Comment
 
 
 # 글작성 폼
@@ -18,3 +18,18 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['photo', 'content']
+
+
+# 댓글 작성 폼
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(label='', widget=forms.TextInput(attrs={
+        'class': 'comment-form',
+        'size': '70px',
+        'placeholder': '댓글 달기...',
+        'maxlength': '40',
+    }))
+
+    # Meta 태그를 사용해서 규칙을 정해줍니다.
+    class Meta:
+        model = Comment
+        fields = ['content']

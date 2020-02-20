@@ -83,6 +83,19 @@
                     },
 
                 });
+
+            } else if(element.matches('[data-name="comment"]')) {
+                console.log('새 댓글');
+
+                const pk = element.getAttribute('name');
+                const content = document.querySelector('#add-comment-post' + pk + '> input[type=text]').value;
+
+                console.log('content: ', content);
+
+                if(content.length > 140) {
+                    alert('댓글은 최대 140자까지 입력 가능합니다.' + '\n' + '현재 글자수: ' + content.length);
+                    return;
+                }
             }
 
         }
