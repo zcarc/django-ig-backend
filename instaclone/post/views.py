@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Like, Comment
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json # 이 부분을 불러오지 않으면 ajax 통신에서 error가 발생합니다.
@@ -170,7 +170,7 @@ def comment_delete(request):
     pk = request.POST.get('pk')
     comment = get_object_or_404(Comment, pk=pk)
 
-    if request.method == 'POST' and reuqest.user == comment.author:
+    if request.method == 'POST' and request.user == comment.author:
         comment.delete()
         message = '삭제완료'
         status = 1

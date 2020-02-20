@@ -96,6 +96,54 @@
                     alert('댓글은 최대 140자까지 입력 가능합니다.' + '\n' + '현재 글자수: ' + content.length);
                     return;
                 }
+
+                // post/urls.py의 path의 name인 comment_new를 추적합니다.
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "post:comment_new" %}',
+                    data: {
+                        'pk': pk,
+                        'content': content,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    dataType: 'html',
+                    success: function (data, textStatus, jqXHR) {
+                        console.log('ajax 성공');
+                        document.querySelector('#comment-list-ajax-post' + pk).insertAdjacentHTML('afterbegin', data);
+                    },
+                    error: function (request, status, error) {
+                        console.log('ajax 실패');
+                        console.log('request.status: ', request.status);
+                        console.error('request.responseText: ', request.responseText);
+                        console.error('error: ', error);
+                    }
+                });
+
+            } else if(element.matches('[data-name="comment_delete"]')) {
+
+                const pk = element.getAttribute('name');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "post:comment_delete" %}',
+                    data: {
+                        'pk': pk,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    dataType: 'json',
+                    success: function (response, textStatus, jqXHR) {
+                        console.log('ajax 성공');
+                        if(response.status) {
+                            document.querySelector(`#comment${pk}`).remove();
+                        }
+                    },
+                    error: function (request, status, error) {
+                        console.log('ajax 실패');
+                        console.log('request.status: ', request.status);
+                        console.error('request.responseText: ', request.responseText);
+                        console.error('error: ', error);
+                    }
+                });
             }
 
         }
