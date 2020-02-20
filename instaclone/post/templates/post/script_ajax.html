@@ -19,8 +19,48 @@
 
             // 타겟을 클릭했을 때 클래스 'on'을 추가해줍니다.
             element.classList.toggle('on');
-        }
 
+            // data-name을 이용해서 각기 다른 포스트에 좋아요와 북마크를 컨트롤합니다.
+            while(!element.getAttribute('data-name')) {
+
+                element = element.parentNode;
+
+                if(element.nodeName === 'BODY') {
+                    element = null;
+                    return;
+                }
+            }
+
+            // matches() 함수는 엘리먼트의 속성이 일치하는지 확인합니다.
+            // heartbeat는 하트 아이콘입니다.
+            if(element.matches('[data-name="heartbeat"]')) {
+                console.log('하트입니다.')
+
+                const pk = element.getAttribute('name');
+                console.log('pk: ', pk);
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'post:post_like' %}",
+                    data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'}, // 고유한 요청이 될 수 있도록 합니다.
+                    dataType: "json",
+                    success: function (response) {
+                        // alert('성공!');
+                        const likeCount = document.querySelector('#like-count-' + pk);
+                        likeCount.innerHTML = '좋아요' + response.like_count + '개';
+                    },
+                    error: function (request, status, error) {
+                        alert('에러!');
+                    },
+
+                });
+
+
+            } else if(element.matches('[data-name="bookmark"]')) {
+                console.log('북마크입니다.')
+            }
+
+        }
 
         // delegation 클릭 이벤트
         delegation.addEventListener('click', delegationFunc);
