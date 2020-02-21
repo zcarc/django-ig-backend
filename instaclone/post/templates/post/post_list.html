@@ -1,6 +1,9 @@
 {% extends 'post/layout.html' %}
 {% load static %}
 
+<!--add_link를 사용하기 위해서 post_extras.py를 load 해야 합니다.-->
+{% load post_extras %}
+
 <!--CSS를 가져옵니다.-->
 {% block head %}
 
@@ -158,6 +161,10 @@
                         <span id="like-count-{{ post.id }}">좋아요{{ post.like_count }}개</span>
                         <span id="bookmark-count-{{ post.id }}">북마크{{ post.bookmark_count }}개</span>
                     </div>
+
+                    <!--게시글 내용-->
+                    <!--safe 필터를 사용해서 tag escape를 방지합니다.-->
+                    <div class="content">{{ post.content|add_link|safe|linebreaksbr }}</div>
 
                     <!--게시글 댓글 영역-->
                     <div class="comment_container">

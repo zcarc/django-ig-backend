@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+import re # 정규표현식을 사용합니다.
 
 # Create your models here.
 
@@ -27,6 +28,8 @@ class Post(models.Model):
 
     content = models.CharField(max_length=140, help_text="최대길이 140자 입력이 가능합니다.")
 
+    tag_set = models.ManyToManyField('Tag', blank=True)
+
     # 다대다 관계
     # like_user_set을 통해서 Post.like_set으로 접근이 가능합니다.
     like_user_set = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -50,6 +53,26 @@ class Post(models.Model):
     class Meta:
         # created_at 기준으로 정렬합니다.
         ordering = ['-created_at']
+
+
+    def tag_save(self):
+        # 매칭되는 모든 경우를 리턴합니다.
+        tags = re.findall(r'#(\w+)\b', self.content)
+
+        # 들어온 태그가 없다면면
+        if not tags:
+            return
+
+        for t in tags:
+            # 'name'에 새로운 'tag'가 추가되었을 때 't'를 'name'에 넣습니다.
+            tag, tag_created = Tag.objects.get_or_create(name=t)
+
+            # ManyToMany 필드에 인스턴스를 추가합니다.
+            self.tag_set.add(tag)
+
+
+
+
 
     # 좋아요를 카운팅하는 함수
     @property
@@ -106,3 +129,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
+
+
+# 중계 모델입니다.
+class Tag(models.Model):
+    name = models.CharField(max_length=140, unique=True)
+
+    def __str__(self):
+        return self.name

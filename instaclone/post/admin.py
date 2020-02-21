@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 
-from .models import Post, Like, Bookmark, Comment
+from .models import Post, Like, Bookmark, Comment, Tag
 
 class PostForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea)
@@ -49,3 +49,8 @@ class BookmarkAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['post', 'content', 'author', 'created_at']
     list_display_links = ['post', 'content', 'author']
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['name']
