@@ -20,6 +20,15 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nickname = models.CharField('별명', max_length=20, unique=True)
 
+    # follow 관계를 저장해주는 field를 만듭니다.
+    # symmetrical: False, 대칭 관계를 False (한쪽만 follow 할 수도 있습니다.)
+    follow_set = models.ManyToManyField('self',
+                                        blank=True,
+                                        through='Follow',
+                                        symmetrical=False,
+                                        )
+
+
     # 저장위치와와 처리과정을 설정하는게 update_to=user_path 라는 함수입니다.
     about = models.CharField(max_length=300, blank=True)
 
@@ -44,3 +53,59 @@ class Profile(models.Model):
     # 외래키 설정
     def __str__(self):
         return self.nickname
+
+
+    # following의 카운트와 사용자를 확인하는 부분입니다.
+    # 나를 팔로우한 유저를 반복문으로
+    # self : Profile 입니다.
+    # follower_user : to_user의 follower_user 입니다.
+    # 이 함수가 실행되면 모든 유저가 담겨서 반환됩니다.
+    @property
+    def get_follower(self):
+        return [i.from_user for i in self.follower_user.all()]
+
+
+    # 내가 팔로잉인 사람들을 확인할 수 있습니다.
+    @property
+    def get_following(self):
+        return [i.to_user for i in self.follow_user.all()]
+
+
+    # 나를 팔로워한 유저의 수를 확인합니다.
+    @property
+    def follower_count(self):
+        return len(self.get_follower)
+
+
+    # 내가 팔로잉한 사람들의 수를 확인합니다.
+    @property
+    def following_count(self):
+        return len(self.get_following)
+
+
+    # 나를 팔로워한 사람을 확인합니다.
+    def is_follower(self, user):
+        return user in self.get_follower
+
+
+    # 내가 팔로잉한 사람을 확인합니다.
+    def is_following(self, user):
+        return user in self.get_following
+
+
+
+class Follow(models.Model):
+    from_user = models.ForeignKey(Profile, related_name='follow_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(Profile, related_name='follower_user', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # 인스턴스를 추적할 때 형식을 설정합니다.
+    def __str__(self):
+        return "{} -> {}".format(self.from_user, self.to_user)
+
+    # follow 모델 전체의 규칙을 정해줍니다.
+    # 아래의 두개를 유니크한 관계를 맺습니다.
+    class Meta:
+        unique_together = (
+            ('from_user', 'to_user')
+        )
