@@ -252,6 +252,62 @@
 
             }
 
+            if(scrollHeight + 300 >= documentHeight) {
+
+                // ajax 통신횟수, 남아있는 페이지 수의 확인,
+                // 어느지점에 도달했을 때 스크롤을 막기 위해서 생성해줍니다.
+                let page = document.querySelector('#page').value;
+                let end_page = {{ posts.paginator.num_pages }}
+
+                if(page > end_page) {
+                    return;
+                }
+
+                document.querySelector('#page').value = parseInt(page) + 1;
+
+                callMorePostAjax(page);
+
+            }
+
+        }
+
+        function callMorePostAjax(page) {
+
+            let end_page = {{ posts.paginator.num_pages }}
+
+            if(page > end_page) {
+                return;
+
+            } else {
+
+                // csrf: 요청을 보낼 때 서버에서 암호화된 토큰을 받습니다.
+                // 그리고 다시 서버로 보내서 서로 두개의 토큰을 비교해서
+                // 우리가 보낸 토큰값이 맞는지 확인해서 중간에 해킨시도를 막아줍니다.
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "post:post_list" %}',
+                    data: {
+                        'page': page,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    dataType: 'html',
+                    success: addMorePostAjax,
+                    error: function (request, status, error) {
+                        console.log('request.status: ', request.status);
+                        console.error('request.responseText: ', request.responseText);
+                        console.error('error: ', error);
+                    }
+                });
+            }
+        }
+
+
+        function addMorePostAjax(data, textStatus, jqXHR) {
+
+            const post = document.querySelector('#post_list_ajax');
+
+            // post 뒤에 계속 이어붙인다는 의미입니다.
+            post.insertAdjacentHTML("beforeend", data);
         }
 
 
