@@ -146,12 +146,15 @@
                 });
 
             } else if(element.matches('[data-name="follow"]')) {
-                console.log('팔로우');
+                console.log('data-name="follow');
+
                 const pk = element.getAttribute('name');
+                console.log('pk type:', typeof pk);
+
 
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "post:accounts_follow" %}',
+                    url: '{% url "accounts:follow" %}',
                     data: {
                         'pk': pk,
                         'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -159,6 +162,17 @@
                     dataType: 'json',
                     success: function (response, textStatus, jqXHR) {
                         console.log('ajax 성공');
+
+                        // status가 '1'이라면 following 상태입니다.
+                        if(response.status) {
+                            document.querySelector(`input.follow[name='${pk}']`).value = '팔로잉';
+
+                          // '0' 이라면 following 상태가 아닙니다.
+                        } else {
+                            document.querySelector(`input.follow[name='${pk}']`).value = '팔로우';
+                        }
+
+
                     },
                     error: function (request, status, error) {
                         console.log('ajax 실패');
