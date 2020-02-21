@@ -7,12 +7,40 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json # 이 부분을 불러오지 않으면 ajax 통신에서 error가 발생합니다.
 from django.http import HttpResponse
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 # Create your views here.
 def post_list(request):
     # 포스트에서 모든 내용을 불러옵니다.
     post_list = Post.objects.all()
+
+    # 3개씩 Paginator에 넣습니다.
+    paginator = Paginator(post_list, 3)
+    page_num = request.POST.get('page')
+
+    # 예외 상황에 서버가 종료되지 않게해줍니다.
+    # 1. 페이지가 integer가 아니라면 페이지를 '1'로 바꿉니다.
+    # 2. 최대 페이지 수를 넘어서면 마지막 페이지를 보여줍니다.
+    try:
+        posts = paginator.page(page_num)
+
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    comment_form = CommentForm()
+
+
+    # post_list.html에서 ajax 요청이 들어왔다면
+    if reuqest.is_ajax():
+        return render(request, 'post/post_list_ajax.html', {
+            'posts': posts,
+            'comment_form': comment_form,
+        })
+
 
     # 사용자가 로그인 했는지 체크합니다.
     # 로그인이 되어있다면
@@ -35,14 +63,16 @@ def post_list(request):
 
         return render(request, 'post/post_list.html', {
             'user_profile': user_profile,
-            'posts': post_list,
+            'posts': posts,
+            'comment_form': comment_form,
             'following_post_list': following_post_list,
         })
 
     # 로그인이 안되어있다면
     else:
         return render(request, 'post/post_list.html', {
-            'posts': post_list,
+            'posts': posts,
+            'comment_form': comment_form,
         })
 
 
