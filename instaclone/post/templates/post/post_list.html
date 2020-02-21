@@ -52,9 +52,31 @@
 
                         <div class="sprite_more_icon" data-name="more">
                             <ul class="toggle_box">
-                               <li><input type="submit" class="follow" value="팔로우" data-name="follow"></li>
-                                <li>수정</li>
-                                <li>삭제</li>
+                                <li>
+                                    <!-- 현재 로그인한 사용자가 포스트 작성자의 팔로워 목록에 있다면 -->
+                                    {% if user.profile in post.author.profile.get_follower %}
+                                    <input type="submit" class="follow" value="팔로잉" data-name="follow" name="{{ post.author.profile.id }}">
+
+                                    {% else %}
+                                    <input type="submit" class="follow" value="팔로우" data-name="follow" name="{{ post.author.profile.id }}">
+
+                                    {% endif %}
+                                </li>
+
+                                <!--포스트의 작성자가 로그인한 유저와 같을시만 수정하거나 삭제-->
+                                {% if post.author == user %}
+                                <li>
+                                    <a class="post-edit" href="{% url 'post:post_edit' post.pk %}">수정</a>
+                                </li>
+                                
+                                <li>
+                                    <form class="post-delete-form" action="{% url 'post:post_delete' post.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <input class="post-delete" type="submit" value="삭제">
+                                    </form>
+                                </li>
+                                {% endif %}
+
                             </ul>
                         </div>
                     </header>

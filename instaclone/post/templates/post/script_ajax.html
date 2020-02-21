@@ -144,7 +144,32 @@
                         console.error('error: ', error);
                     }
                 });
+
+            } else if(element.matches('[data-name="follow"]')) {
+                console.log('팔로우');
+                const pk = element.getAttribute('name');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "post:accounts_follow" %}',
+                    data: {
+                        'pk': pk,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    dataType: 'json',
+                    success: function (response, textStatus, jqXHR) {
+                        console.log('ajax 성공');
+                    },
+                    error: function (request, status, error) {
+                        console.log('ajax 실패');
+                        console.log('request.status: ', request.status);
+                        console.error('request.responseText: ', request.responseText);
+                        console.error('error: ', error);
+                    }
+                });
             }
+
+
 
         }
 
