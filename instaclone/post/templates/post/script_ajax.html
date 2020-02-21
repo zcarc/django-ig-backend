@@ -5,6 +5,12 @@
         // delegation 기준 태그
         const delegation = document.querySelector('.contents_box');
 
+        // 사이드 박스 태그
+        const side_box = document.querySelector('.side_box');
+
+        // 헤더 태그
+        const header = document.querySelector('#header');
+
 
         // delegation 함수
         function delegationFunc(e) {
@@ -187,8 +193,73 @@
 
         }
 
-        // delegation 클릭 이벤트
+
+        // 브라우저 사이즈 변경 시 호출되는 함수입니다.
+        function resizeFunc() {
+            console.log('리사이즈');
+
+            if(pageYOffset >= 10) {
+                // console.log(window.innerWidth);
+                // console.log(window.innerWidth * 0.5);
+
+                let calcWidth = (window.innerWidth * 0.5) + 167;
+
+                if(side_box){
+                    side_box.style.left = calcWidth + 'px';
+                }
+
+            }
+
+        }
+
+
+        // 스크롤을 했을 때 호출되는 함수입니다.
+        function scrollFunc() {
+
+
+            let scrollHeight = pageYOffset + window.innerHeight;
+            let documentHeight = document.body.scrollHeight;
+
+            // 아래 두개의 값이 맞아 떨어지면 ajax 통신이 일어나야합니다.
+            // scrollHeight, documentHeight
+            // 하지만 pageYOffset 는 스크롤이 화면 위의 끝부분에서 부터 시작하기 때문에
+            // 그 아래 끝부분까지 더해야하는데 이때 window.innerHeight를 더해주게 되면
+            // document.body.scrollHeight 값 까지 더해지게 됩니다.
+            console.log('pageYOffset: ', pageYOffset);
+            console.log('window.innerHeight: ', window.innerHeight);
+            console.log('scrollHeight: ', scrollHeight);
+            console.log('document.body.scrollHeight: ', documentHeight);
+            console.log('\n');
+
+            if(pageYOffset >= 10) {
+
+                header.classList.add('on');
+
+                // 다른 html 파일에서 main.js를 사용해도 에러가 발생하지 않는다.
+                if(side_box) {
+                    side_box.classList.add('on');
+                }
+
+                resizeFunc();
+
+            } else {
+                header.classList.remove('on');
+
+                if(side_box) {
+                    side_box.classList.remove('on');
+                    side_box.removeAttribute('style');
+                }
+
+            }
+
+        }
+
+
+        // dlegation 클릭 이벤트
         delegation.addEventListener('click', delegationFunc);
+
+        window.addEventListener('resize', resizeFunc);
+        window.addEventListener('scroll', scrollFunc);
 
     })();
 
