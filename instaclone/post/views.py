@@ -15,6 +15,7 @@ def post_list(request):
     post_list = Post.objects.all()
 
     # 사용자가 로그인 했는지 체크합니다.
+    # 로그인이 되어있다면
     if request.user.is_authenticated:
 
         username = request.user
@@ -22,11 +23,20 @@ def post_list(request):
         # get_user_model(): 유저 모델을 가져옵니다.
         # username=username: 유저 네임과 같은지 확인합니다.
         user = get_object_or_404(get_user_model(), username=username)
+
         user_profile = user.profile
+
+        # 팔로잉한 사람들을 찾습니다.
+        following_set = request.user.profile.get_following
+
+        # 포스트에서 팔로잉한 사람들이 있는것만 가져옵니다.
+        following_post_list = Post.objects.filter(author__profile__in=following_set)
+
 
         return render(request, 'post/post_list.html', {
             'user_profile': user_profile,
             'posts': post_list,
+            'following_post_list': following_post_list,
         })
 
     # 로그인이 안되어있다면
