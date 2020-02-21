@@ -35,7 +35,7 @@ def post_list(request):
 
 
     # post_list.html에서 ajax 요청이 들어왔다면
-    if reuqest.is_ajax():
+    if request.is_ajax():
         return render(request, 'post/post_list_ajax.html', {
             'posts': posts,
             'comment_form': comment_form,
