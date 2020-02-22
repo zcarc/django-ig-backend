@@ -60,7 +60,7 @@
                                     </li>
 
                                     <!--로그인한 사용자가 글을 작성한 사용자라면 수정 삭제를 보여줍니다.-->
-                                    {% if user.author == user %}
+                                    {% if post.author == user %}
                                     <li>
                                         <a class="post-edit" href="{% url 'post:post_edit' post.pk %}">수정</a>
                                     </li>
@@ -142,5 +142,7 @@
         </section>
 
     </div>
+
+{% include "post/script_ajax_detail.html" %}
 
 {% endblock %}
