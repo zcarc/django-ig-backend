@@ -1,19 +1,49 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Like, Comment
+from .models import Post, Like, Comment, Tag
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 import json # 이 부분을 불러오지 않으면 ajax 통신에서 error가 발생합니다.
 from django.http import HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Count
 
 
 # Create your views here.
-def post_list(request):
+
+# 카운트를 검색할 때 태그를 통해서 검색할 수 있습니다.
+# 태그를 처음에는 없음으로 설정해줘야 포스트들이 문제없이 뜹니다.
+def post_list(request, tag=None):
+
+    print('views.py... tag: ', tag);
+
+    # annotate : 엑셀에서 컬럼을 하나 더 추가한다고 보시면 됩니다.
+    # -num_psot : '-'는 역순입니다.
+    # Count(): 포스트의 레코드 수를 셉니다.
+    tag_all = Tag.objects.annotate(num_post=Count('post')).order_by('-num_post')
+
     # 포스트에서 모든 내용을 불러옵니다.
-    post_list = Post.objects.all()
+    # tag_set__name__ : name을 foreign Key로 지정합니다.
+    # iexact : 대소문자 구분없이 name으로 검색합니다.
+    # prefetch_related() : 1:1, N:N 관계입니다.
+    # select_related() : 1:1 관계에서만 사용합니다.
+    # select_related('author__profile') 에서 한번 불러와서
+    # prefetch_related() 에서 author__profile 를 한번 더 줄일 수 있습니다.
+    if tag:
+        post_list = Post.objects.filter(tag_set__name__iexact=tag) \
+            .prefetch_related('tag_set', 'like_user_set__profile', 'comment_set__author__profile',
+                              'author__profile__follower_user', 'author__profile__follower_user__from_user') \
+            .select_related('author__profile')
+    else:
+        post_list = Post.objects.all() \
+            .prefetch_related('tag_set', 'like_user_set__profile', 'comment_set__author__profile',
+                              'author__profile__follower_user', 'author__profile__follower_user__from_user') \
+            .select_related('author__profile')
+
+
+
 
     # 3개씩 Paginator에 넣습니다.
     paginator = Paginator(post_list, 3)
@@ -42,6 +72,13 @@ def post_list(request):
         })
 
 
+    if request.method == 'POST':
+        # isalnum() : 문자인지 숫자인지 확인합니다.
+        tag = request.POST.get('tag')
+        tag_clean = ''.join(e for e in tag if e.isalnum())
+
+        return redirect('post:post_search', tag_clean)
+
     # 사용자가 로그인 했는지 체크합니다.
     # 로그인이 되어있다면
     if request.user.is_authenticated:
@@ -66,6 +103,8 @@ def post_list(request):
             'posts': posts,
             'comment_form': comment_form,
             'following_post_list': following_post_list,
+            'tag': tag,
+            'tag_all': tag_all,
         })
 
     # 로그인이 안되어있다면
@@ -73,6 +112,8 @@ def post_list(request):
         return render(request, 'post/post_list.html', {
             'posts': posts,
             'comment_form': comment_form,
+            'tag': tag,
+            'tag_all': tag_all,
         })
 
 
@@ -89,7 +130,7 @@ def post_new(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            # post.tag_save()
+            post.tag_save() # 포스트의 태그를 저장합니다.
             messages.info(request, '새 글이 등록되었습니다.')
             return redirect('post:post_list')
 

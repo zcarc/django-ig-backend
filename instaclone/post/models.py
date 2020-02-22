@@ -2,7 +2,8 @@ from django.conf import settings
 from django.db import models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
-import re # 정규표현식을 사용합니다.
+# 정규표현식을 사용합니다.
+import re
 
 # Create your models here.
 

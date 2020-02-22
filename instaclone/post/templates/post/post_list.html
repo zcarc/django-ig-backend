@@ -164,7 +164,7 @@
 
                     <!--게시글 내용-->
                     <!--safe 필터를 사용해서 tag escape를 방지합니다.-->
-                    <div class="content">{{ post.content|add_link|safe|linebreaksbr }}</div>
+                    <div class="content">{{ post|add_link|safe|linebreaksbr }}</div>
 
                     <!--게시글 댓글 영역-->
                     <div class="comment_container">
