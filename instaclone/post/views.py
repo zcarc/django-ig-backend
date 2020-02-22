@@ -13,6 +13,15 @@ from django.db.models import Count
 
 # Create your views here.
 
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comment_form = CommentForm()
+
+    return render(request, 'post/post_detail.html', {
+        'comment_form': comment_form,
+        'post': post,
+    })
+
 # 카운트를 검색할 때 태그를 통해서 검색할 수 있습니다.
 # 태그를 처음에는 없음으로 설정해줘야 포스트들이 문제없이 뜹니다.
 def post_list(request, tag=None):
