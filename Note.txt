@@ -30,3 +30,12 @@ url.py
 
 
 > python manage.py makemigrations 를 할 때 &&로 여러개를 동시에 할 수도 있는데 여기서는 하나씩 하는 것을 추천합니다.
+
+
+
+freeze
+    pip freeze > requirement.txt
+        - 현재 설치된 패키지들을 텍스트 파일로 추출해줍니다.
+
+    pip install -r requirement.txt
+        - 해당 파일의 패키지들을 전부 설치합니다.
