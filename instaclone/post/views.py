@@ -22,6 +22,30 @@ def post_detail(request, pk):
         'post': post,
     })
 
+
+def my_post_list(request, username):
+    # 유저 모델을 가져와서 username이 username과 같은 것을 찾아냅니다.
+    user = get_object_or_404(get_user_model(), username=username)
+    user_profile = user.profile
+
+    # related 부분은 queryset을 여러번 보내지 않고 query를 줄여 속도를 개선하기 위해서 사용합니다.
+    target_user = get_user_model().objects.filter(id=user.id).select_related('profile') \
+        .prefetch_related('profile__follower_user__from_user', 'profile__follow_user__to_user')
+
+    # 유저의 포스트 리스트
+    post_list = user.post_set.all()
+
+    # 모든 포스트 리스트
+    all_post_list = Post.objects.all()
+
+    return render(request, 'post/my_post_list.html', {
+        'user_profile': user_profile,
+        'target_user': target_user,
+        'post_list': post_list,
+        'all_post_list': all_post_list,
+        'username': username,
+    })
+
 # 카운트를 검색할 때 태그를 통해서 검색할 수 있습니다.
 # 태그를 처음에는 없음으로 설정해줘야 포스트들이 문제없이 뜹니다.
 def post_list(request, tag=None):

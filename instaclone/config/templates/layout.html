@@ -47,7 +47,20 @@
                     <div class="sprite_camera_icon"><a href="{% url 'post:post_new' %}"></a></div>
                     <div class="sprite_compass_icon"><a href="#"></a></div>
                     <div class="sprite_heart_icon_outline"><a href="#"></a></div>
-                    <div class="sprite_user_icon_outline"><a href="#"></a></div>
+
+                    {% if user.is_authenticated %}
+                    <div class="sprite_user_icon_outline">
+                        <a href="{% url 'post:my_post_list' user.username %}"></a>
+                    </div>
+
+                    {% else %}
+                    <div class="sprite_user_icon_outline">
+                        <a href="{% url 'accounts:login' %}"></a>
+                    </div>
+
+                    {% endif %}
+
+
                 </div>
 
 
@@ -63,6 +76,10 @@
     <!-- jQuery (부트스트랩의 자바스크립트 플러그인을 위해 필요합니다) -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+
+    <!--마이페이지에서는 외부에서 자바스크립트 파일을 불러와서 사용합니다.-->
+    {% block js %}
+    {% endblock %}
 
 </body>
 </html>
